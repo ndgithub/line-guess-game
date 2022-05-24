@@ -1,25 +1,30 @@
 import logo from './logo.svg';
 import './App.css';
+import React, { useState } from 'react';
+import { Game } from './components/Game.js';
+import { Welcome } from './components/Welcome.js';
+import { Goodbye } from './components/Goodbye.js';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+  const [count, setCount] = useState(0);
+  const [round, setRound] = useState(0);
+  const [lines, setLines] = useState(0);
+
+  function onSubmit() {
+
+  }
+
+
+  switch (round) {
+    case 0: return <Welcome onStart={() => setRound(1)} />
+      break;
+    case 5: <Goodbye />
+      break;
+    default: return <Game onSubmit={onSubmit} />
+  }
+
+
 }
 
 export default App;
