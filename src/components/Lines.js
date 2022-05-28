@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 export const Lines = (props) => {
-  const ref = useRef();
+  const myRef = useRef();
 
-  const [lines, setLines] = useState({});
-
-  const [points1, setPoints1] = useState('0,0 0,0');
-  const [points2, setPoints2] = useState('0,0 0,0');
+  //lines object 4-point object
+  const [lines, setLines] = useState({
+    line1: { x1: 0, y1: 0, x2: 0, y2: 0 },
+    line2: { x1: 0, y1: 0, x2: 0, y2: 0 },
+  });
 
   let line1;
   let line2;
@@ -21,27 +22,51 @@ export const Lines = (props) => {
   };
 
   useEffect(() => {
-    line1 = makeLine(ref.current.clientWidth, ref.current.clientHeight);
-    line2 = makeLine(ref.current.clientWidth, ref.current.clientHeight);
-    setLines({ line1, line2 });
-    console.log(toPoints(line1));
-    setPoints1(toPoints(line1));
-    setPoints2(toPoints(line2));
+    refresh();
   }, []);
-  const getLength = (lineObj) => {};
+  const getLength = (lineObj) => {
+    // console.log(lineObj.x2);
+    // console.log(parseInt(lineObj.x2));
+    // console.log(parseInt(lineObj.x2) - parseInt(lineObj.x1));
+    let aSqrd = parseInt(Math.pow(parseInt(lineObj.x2) - parseInt(lineObj.x1)));
+    let bSqrd = Math.pow(parseInt(lineObj.y2) - parseInt(lineObj.y1));
+    let cSqrd = aSqrd + bSqrd;
+    return Math.sqrt(cSqrd);
+  };
   const toPoints = (lineObj) =>
     `${lineObj.x1},${lineObj.y1} ${lineObj.x2},${lineObj.y2}`;
 
+  const refresh = () => {
+    console.log(myRef.current.clientWidth, myRef.current.clientHeight);
+    line1 = makeLine(myRef.current.clientWidth, myRef.current.clientHeight);
+    line2 = makeLine(myRef.current.clientWidth, myRef.current.clientHeight);
+    // for (let i = 0; i < 10; i++) {
+    //   console.log(
+    //     makeLine(myRef.current.clientWidth, myRef.current.clientHeight)
+    //   );
+    // }
+    setLines({ line1, line2 });
+  };
+
   return (
-    <div id='line-box' ref={ref}>
-      <svg height='600' width='500'>
-        <polyline
-          points={points1}
-          style={{ fill: 'none', stroke: 'black', strokeWidth: 3 }}
+    <div id='line-box' ref={myRef}>
+      <button onClick={refresh} id='refresh'>
+        Refresh
+      </button>
+      <svg height='95%' width='95%'>
+        <line
+          x1={lines.line1.x1}
+          y1={lines.line1.y1}
+          x2={lines.line1.x2}
+          y2={lines.line1.y2}
+          style={{ stroke: 'red', strokeWidth: 4 }}
         />
-        <polyline
-          points={points2}
-          style={{ fill: 'none', stroke: 'black', strokeWidth: 3 }}
+        <line
+          x1={lines.line2.x1}
+          y1={lines.line2.y1}
+          x2={lines.line2.x2}
+          y2={lines.line2.y2}
+          style={{ stroke: 'black', strokeWidth: 4 }}
         />
         Sorry, your browser does not support inline SVG.
       </svg>
