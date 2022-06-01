@@ -8,52 +8,59 @@ export const Lines = (props) => {
     line1: { x1: 0, y1: 0, x2: 0, y2: 0 },
     line2: { x1: 0, y1: 0, x2: 0, y2: 0 },
   });
+  const [distances, setDistances] = useState(0, 0);
 
   let line1;
   let line2;
-
-  const makeLine = (width, height) => {
-    return {
-      x1: Math.floor(Math.random() * width),
-      y1: Math.floor(Math.random() * height),
-      x2: Math.floor(Math.random() * width),
-      y2: Math.floor(Math.random() * height),
-    };
-  };
-
   useEffect(() => {
     refresh();
   }, []);
-  const getLength = (lineObj) => {
-    // console.log(lineObj.x2);
-    // console.log(parseInt(lineObj.x2));
-    // console.log(parseInt(lineObj.x2) - parseInt(lineObj.x1));
-    let aSqrd = parseInt(Math.pow(parseInt(lineObj.x2) - parseInt(lineObj.x1)));
-    let bSqrd = Math.pow(parseInt(lineObj.y2) - parseInt(lineObj.y1));
-    let cSqrd = aSqrd + bSqrd;
-    return Math.sqrt(cSqrd);
-  };
-  const toPoints = (lineObj) =>
-    `${lineObj.x1},${lineObj.y1} ${lineObj.x2},${lineObj.y2}`;
 
   const refresh = () => {
-    console.log(myRef.current.clientWidth, myRef.current.clientHeight);
-    line1 = makeLine(myRef.current.clientWidth, myRef.current.clientHeight);
-    line2 = makeLine(myRef.current.clientWidth, myRef.current.clientHeight);
-    // for (let i = 0; i < 10; i++) {
-    //   console.log(
-    //     makeLine(myRef.current.clientWidth, myRef.current.clientHeight)
-    //   );
-    // }
+    console.log(
+      `Client Width: ${myRef.current.clientWidth}, Client Height: ${myRef.current.clientHeight}`
+    );
+    console.log(myRef.current.offsetWidth, myRef.current.offsetHeight);
+
+    line1 = makeLine(myRef.current.offsetWidth, myRef.current.offsetHeight);
+    line2 = makeLine(myRef.current.offsetWidth, myRef.current.offsetHeight);
+
+    console.log(`red: ${line1.distance}, blue: ${line2.distance}`);
+
     setLines({ line1, line2 });
   };
 
+  const makeLine = (width, height) => {
+    let x1 = Math.floor(Math.random() * width);
+    let y1 = Math.floor(Math.random() * height);
+    let x2 = Math.floor(Math.random() * width);
+    let y2 = Math.floor(Math.random() * height);
+    console.log(x1, y1, x2, y2);
+    let distance = getDistance({ x1, y1, x2, y2 });
+    console.log(distance);
+
+    return { x1, y1, x2, y2, distance };
+  };
+
+  const getDistance = ({ x1, y1, x2, y2 }) => {
+    x1 = parseInt(x1);
+    y1 = parseInt(y1);
+    x2 = parseInt(x2);
+    y2 = parseInt(y2);
+
+    let aSqrd = (x2 - x1) * (x2 - x1);
+    let bSqrd = (y2 - y1) * (y2 - y1);
+    let cSqrd = aSqrd + bSqrd;
+    let c = Math.sqrt(cSqrd);
+    return c;
+  };
+
   return (
-    <div id='line-box' ref={myRef}>
+    <div id='line-box' height='100%' width='100%' ref={myRef}>
       <button onClick={refresh} id='refresh'>
         Refresh
       </button>
-      <svg height='95%' width='95%'>
+      <svg height='100%' width='100%'>
         <line
           x1={lines.line1.x1}
           y1={lines.line1.y1}
@@ -66,7 +73,7 @@ export const Lines = (props) => {
           y1={lines.line2.y1}
           x2={lines.line2.x2}
           y2={lines.line2.y2}
-          style={{ stroke: 'black', strokeWidth: 4 }}
+          style={{ stroke: 'blue', strokeWidth: 4 }}
         />
         Sorry, your browser does not support inline SVG.
       </svg>
