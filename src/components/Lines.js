@@ -8,10 +8,7 @@ export const Lines = (props) => {
     line1: { x1: 0, y1: 0, x2: 0, y2: 0 },
     line2: { x1: 0, y1: 0, x2: 0, y2: 0 },
   });
-  const [distances, setDistances] = useState(0, 0);
 
-  let line1;
-  let line2;
   useEffect(() => {
     refresh();
   }, []);
@@ -22,11 +19,11 @@ export const Lines = (props) => {
     );
     console.log(myRef.current.offsetWidth, myRef.current.offsetHeight);
 
-    line1 = makeLine(myRef.current.offsetWidth, myRef.current.offsetHeight);
-    line2 = makeLine(myRef.current.offsetWidth, myRef.current.offsetHeight);
+    let line1 = makeLine(myRef.current.offsetWidth, myRef.current.offsetHeight);
+    let line2 = makeLine(myRef.current.offsetWidth, myRef.current.offsetHeight);
 
     console.log(`red: ${line1.distance}, blue: ${line2.distance}`);
-
+    props.getAnswers(line1.distance, line2.distance);
     setLines({ line1, line2 });
   };
 
@@ -35,10 +32,8 @@ export const Lines = (props) => {
     let y1 = Math.floor(Math.random() * height);
     let x2 = Math.floor(Math.random() * width);
     let y2 = Math.floor(Math.random() * height);
-    console.log(x1, y1, x2, y2);
     let distance = getDistance({ x1, y1, x2, y2 });
     console.log(distance);
-
     return { x1, y1, x2, y2, distance };
   };
 
@@ -51,7 +46,8 @@ export const Lines = (props) => {
     let aSqrd = (x2 - x1) * (x2 - x1);
     let bSqrd = (y2 - y1) * (y2 - y1);
     let cSqrd = aSqrd + bSqrd;
-    let c = Math.sqrt(cSqrd);
+    let c = Math.floor(Math.sqrt(cSqrd));
+
     return c;
   };
 
